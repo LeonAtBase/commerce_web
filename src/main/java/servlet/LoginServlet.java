@@ -25,8 +25,7 @@ public class LoginServlet extends HttpServlet {
             } else {
                 CustomerDAO customerDAO = new CustomerDAO();
                 customerDAO.getConnection();
-                out.print(customerDAO.validate(username));
-                if (username.equals("guest") && password.equals("123")) {
+                if (customerDAO.validate(username)) {
                     out.print("<h1>Welcome " + username + "</h1>");
                     request.getRequestDispatcher("show_product.jsp").include(request, response);
                 } else {
