@@ -6,7 +6,7 @@
         <title>Login</title>
     </head>
     <body>
-        <form action="LoginServlet" method="post" >
+        <form action="LoginServlet" method="get" >
             <h2>購物商城登入系統</h2>
             Username:<br>
             <input type="text" name="username" size="15">
