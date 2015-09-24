@@ -11,6 +11,15 @@
         <script src="Guriddo_jqGrid_JS_5.0.0/js/i18n/grid.locale-en.js" type="text/javascript"></script>
         <script src="Guriddo_jqGrid_JS_5.0.0/js/jquery.jqGrid.min.js" type="text/javascript"></script>
         <title>Product Page</title>
+        <style>
+            a{
+                font-size: 18px;
+                border-style: double;
+            }
+            a:hover{
+                text-decoration: none;
+            }
+        </style>
     </head>
     <body>
         <sql:setDataSource var="datasource" driver="com.mysql.jdbc.Driver"
@@ -20,8 +29,10 @@
             SELECT * FROM product;
         </sql:query>
 
+        <a href="show_order.jsp">查詢購買紀錄</a>
+
         <form action="CheckNumericServlet" method="get">
-            <table border="1" style="width: 40%">
+            <table border="5" style="width: 40%">
                 <tr style="background-color: lightblue">
                     <th>商品編號</th>
                     <th>商品名稱</th>
@@ -38,7 +49,7 @@
                             <input type="hidden" name="price${row.id}" value="${row.price}">
                         </td>                  
                         <td>
-                            <input type="text" name="number${row.id}" size="1" style="text-align: right" value="0">
+                            <input type="text" name="number${row.id}" size="3" style="text-align: right" value="0">
                         </td>
                     </tr>
                 </c:forEach>

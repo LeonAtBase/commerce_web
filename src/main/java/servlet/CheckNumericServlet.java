@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.OrderDetail;
 import model.Orders;
 
@@ -45,17 +46,22 @@ public class CheckNumericServlet extends HttpServlet {
                 request.getRequestDispatcher("show_product.jsp").include(request, response);
             } else {
 
+                HttpSession session = request.getSession();
                 // 資料驗證皆沒問題，開始新增訂單至db
                 OrdersDAO ordersDAO = new OrdersDAO();
                 ordersDAO.getConnection();
                 // 新增一筆訂單
                 Orders orders = new Orders();
                 OrderDetail orderDetail = new OrderDetail();
-                orders.setCustomerId(2); // 會員下訂單
+                // 用username找id
+                int findIdByName = 0;
+                findIdByName = ordersDAO.findIdByName(session.getAttribute("username").toString());
+
+                orders.setCustomerId(findIdByName); // 會員下訂單
                 ArrayList<Integer> productId = new ArrayList(); // 下商品id
                 ArrayList<Integer> number = new ArrayList(); // 對應的商品數量
                 double total = 0;
-                
+
                 for (int i = 1; i <= Integer.parseInt(request.getParameter("last_id")); i++) {
                     if (request.getParameter("number" + i) != null) {
                         if (Integer.parseInt(request.getParameter("number" + i)) != 0) {

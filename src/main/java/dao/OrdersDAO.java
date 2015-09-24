@@ -146,6 +146,29 @@ public class OrdersDAO {
         }
     }
 
+    public int findIdByName(String username) {
+        int id = 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM "
+                + "customer Where Name=?")) {
+            connection.setAutoCommit(false);
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    id = resultSet.getInt("ID");
+                }
+            }
+            connection.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrdersDAO.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                connection.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(OrdersDAO.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+        return id;
+    }
+
     public void closeConnection() {
         try {
             if (connection != null) {
