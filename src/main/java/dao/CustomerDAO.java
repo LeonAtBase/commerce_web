@@ -1,5 +1,6 @@
 package dao;
 
+import data_source.DSF;
 import data_source.DataSourceFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,18 +15,30 @@ import model.Customer;
 
 public class CustomerDAO {
 
-    DataSource ds = DataSourceFactory.getMySQLDataSource();
+    DataSource dataSource = null;
     Connection connection = null;
 
     public Connection getConnection() {
+        dataSource = DSF.getDataSource();
         try {
-            connection = ds.getConnection();
+            connection = dataSource.getConnection();
         } catch (SQLException ex) {
-            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return connection;
     }
 
+//    DataSource ds = DataSourceFactory.getMySQLDataSource();
+//    Connection connection = null;
+//
+//    public Connection getConnection() {
+//        try {
+//            connection = ds.getConnection();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return connection;
+//    }
 //    public Connection getConnection() {
 //        try {
 //            connection = DriverManager

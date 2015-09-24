@@ -1,5 +1,6 @@
 package servlet;
 
+import dao.CustomerDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -19,16 +20,21 @@ public class LoginServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
-//            CustomerDAO customerDAO = new CustomerDAO();
-//            customerDAO.getConnection();
-            if (username.equals("guest") && password.equals("123")) {
-                out.print("<h1>Welcome " + username + "</h1>");
-                request.getRequestDispatcher("show_product.jsp").include(request, response);
+            if (username.isEmpty()) {
+                response.sendRedirect("login.jsp");
             } else {
-                request.getRequestDispatcher("login.jsp").include(request, response);
-                out.print("<h2 style='color:red'>帳號或密碼錯誤，請重新輸入!</h2>");
+                CustomerDAO customerDAO = new CustomerDAO();
+                customerDAO.getConnection();
+                out.print(customerDAO.validate(username));
+                if (username.equals("guest") && password.equals("123")) {
+                    out.print("<h1>Welcome " + username + "</h1>");
+                    request.getRequestDispatcher("show_product.jsp").include(request, response);
+                } else {
+                    request.getRequestDispatcher("login.jsp").include(request, response);
+                    out.print("<h2 style='color:red'>帳號或密碼錯誤，請重新輸入!</h2>");
+                }
+                customerDAO.closeConnection();
             }
-//            customerDAO.closeConnection();
         }
     }
 }

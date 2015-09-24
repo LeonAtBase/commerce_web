@@ -51,7 +51,7 @@ public class CheckNumericServlet extends HttpServlet {
                 // 新增一筆訂單
                 Orders orders = new Orders();
                 OrderDetail orderDetail = new OrderDetail();
-                orders.setCustomerId(3); // 會員下訂單
+                orders.setCustomerId(2); // 會員下訂單
                 ArrayList<Integer> productId = new ArrayList(); // 下商品id
                 ArrayList<Integer> number = new ArrayList(); // 對應的商品數量
                 double total = 0;

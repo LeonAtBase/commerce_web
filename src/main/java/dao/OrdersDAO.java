@@ -13,9 +13,9 @@ import model.OrderDetail;
 import model.Orders;
 
 public class OrdersDAO {
-    
+
     Connection connection = null;
-    
+
     public Connection getConnection() {
         try {
             connection = DriverManager
@@ -25,7 +25,7 @@ public class OrdersDAO {
         }
         return connection;
     }
-    
+
     public void insert(Orders orders, OrderDetail orderDetail) {
         ArrayList<Integer> productId = orderDetail.getProductId();
         ArrayList<Integer> number = orderDetail.getNumber();
@@ -82,7 +82,7 @@ public class OrdersDAO {
             }
         }
     }
-    
+
     public void selectAll() {
         try (Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT * FROM orders")) {
@@ -98,7 +98,7 @@ public class OrdersDAO {
             Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void select(Orders orders) {
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM "
                 + "orders WHERE ID=?");) {
@@ -124,7 +124,7 @@ public class OrdersDAO {
             }
         }
     }
-    
+
     public void delete(Orders orders) {
         try (PreparedStatement ordersStatement = connection.prepareStatement("DELETE FROM "
                 + "orders WHERE ID=?");
@@ -145,7 +145,7 @@ public class OrdersDAO {
             }
         }
     }
-    
+
     public void closeConnection() {
         try {
             if (connection != null) {
