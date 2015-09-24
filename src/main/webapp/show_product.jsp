@@ -29,7 +29,16 @@
             SELECT * FROM product;
         </sql:query>
 
-        <a href="show_order.jsp">查詢購買紀錄</a>
+        <table style="width: 40%">
+            <tr>
+                <td><a href="show_order.jsp">查詢購買紀錄</a></td>
+                <td style="text-align: right">
+                    <% out.print("使用者名稱: " + session.getAttribute("username"));%>
+                </td>
+            </tr>
+        </table>
+
+
 
         <form action="CheckNumericServlet" method="get">
             <table border="5" style="width: 40%">
