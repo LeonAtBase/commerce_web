@@ -47,10 +47,11 @@
         </table>
 
         <table border="5" style="width: 40%">
-            <tr style="background-color: lightblue">
+            <tr style="background-color: lightblue; border-bottom-width: 0">
                 <th>訂單編號</th>
                 <th>消費金額</th>
                 <th>消費時間</th>
+                <th>消費明細</th>
             </tr>
             <c:forEach var="row" items="${rs.rows}">
                 <tr>
@@ -60,6 +61,12 @@
                     </td >
                     <td style="text-align: center">
                         <c:out value="${row.buydatetime}"/>
+                    </td>
+                    <td style="text-align: center">
+                        <form action="OrderDetailServlet" method="get">
+                            <input type="submit" value="明細">
+                            <input type="hidden" name="id" value="${row.id}">
+                        </form>                      
                     </td>
                 </tr>
             </c:forEach>

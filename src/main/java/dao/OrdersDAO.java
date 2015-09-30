@@ -1,5 +1,8 @@
 package dao;
 
+import com.sun.rowset.CachedRowSetImpl;
+import data_source.DSF;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,23 +12,37 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sql.DataSource;
+import javax.sql.rowset.CachedRowSet;
 import model.OrderDetail;
 import model.Orders;
 
 public class OrdersDAO {
 
+    DataSource dataSource = null;
     Connection connection = null;
 
     public Connection getConnection() {
+        dataSource = DSF.getDataSource();
         try {
-            connection = DriverManager
-                    .getConnection("jdbc:mysql://192.168.0.54:3306/commerce", "guest", "123");
+            connection = dataSource.getConnection();
         } catch (SQLException ex) {
-            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return connection;
     }
 
+//    Connection connection = null;
+//
+//    public Connection getConnection() {
+//        try {
+//            connection = DriverManager
+//                    .getConnection("jdbc:mysql://192.168.0.54:3306/commerce", "guest", "123");
+//        } catch (SQLException ex) {
+//            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return connection;
+//    }
     public void insert(Orders orders, OrderDetail orderDetail) {
         ArrayList<Integer> productId = orderDetail.getProductId();
         ArrayList<Integer> number = orderDetail.getNumber();
@@ -167,6 +184,36 @@ public class OrdersDAO {
             }
         }
         return id;
+    }
+
+    public CachedRowSet selectDetail(int orderId) {
+        CachedRowSet cachedRowSet = null;
+        try {
+            cachedRowSet = new CachedRowSetImpl();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrdersDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM "
+                + "order_detail WHERE OrderID=?")) {
+            preparedStatement.setInt(1, orderId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                cachedRowSet.populate(resultSet);
+            }
+//            // for testing
+//            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+//                while (resultSet.next()) {
+//                    System.out.print("ID: " + resultSet.getInt("ID"));
+//                    System.out.print("\tPID: " + resultSet.getInt("ProductID"));
+//                    System.out.print("\tPrice: " + resultSet.getDouble("Price"));
+//                    System.out.print("\tNumber: " + resultSet.getInt("Number"));
+//                    System.out.println("\tAmount: " + resultSet.getDouble("Price")
+//                            * resultSet.getInt("Number"));
+//                }
+//            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrdersDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return cachedRowSet;
     }
 
     public void closeConnection() {
