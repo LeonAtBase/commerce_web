@@ -1,5 +1,6 @@
 package dao;
 
+import com.sun.rowset.CachedRowSetImpl;
 import data_source.DSF;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +11,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
+import javax.sql.rowset.CachedRowSet;
 import model.Product;
 
 public class ProductDAO {
@@ -128,6 +130,35 @@ public class ProductDAO {
                 Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex1);
             }
         }
+    }
+
+    // for JqGrid
+    public CachedRowSet showProduct(int start, int pageSize) {
+        CachedRowSet cachedRowSet = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM product LIMIT ?,?")) {
+            preparedStatement.setInt(1, start);
+            preparedStatement.setInt(2, pageSize);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                cachedRowSet = new CachedRowSetImpl();
+                cachedRowSet.populate(resultSet);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return cachedRowSet;
+    }
+
+    public int getTableRowCount() {
+        int rowCount = 0;
+        try (Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM product")) {
+            while (resultSet.next()) {
+                rowCount = resultSet.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rowCount;
     }
 
     public void closeConnection() {
