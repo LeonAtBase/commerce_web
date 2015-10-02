@@ -1,6 +1,6 @@
 package model;
 
-public class ShowProduct {
+public class ShowProduct implements Comparable<ShowProduct> {
 
     private int id;
     private String name;
@@ -37,6 +37,12 @@ public class ShowProduct {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    @Override
+    public int compareTo(ShowProduct o) {
+        int value = (int) (this.price - o.price);
+        return value;
     }
 
 }

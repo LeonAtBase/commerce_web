@@ -133,9 +133,19 @@ public class ProductDAO {
     }
 
     // for JqGrid
-    public CachedRowSet showProduct(int start, int pageSize) {
+    public CachedRowSet showProduct(String sidx, String sord, int start, int pageSize) {
         CachedRowSet cachedRowSet = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM product LIMIT ?,?")) {
+        String sql = "SELECT * FROM product ORDER BY id ASC LIMIT ?,?";
+        if (("id").equals(sidx) && ("asc").equals(sord)) {
+            sql = "SELECT * FROM product ORDER BY id ASC LIMIT ?,?";
+        } else if (("id").equals(sidx) && ("desc").equals(sord)) {
+            sql = "SELECT * FROM product ORDER BY id DESC LIMIT ?,?";
+        } else if (("price").equals(sidx) && ("asc").equals(sord)) {
+            sql = "SELECT * FROM product ORDER BY price ASC LIMIT ?,?";
+        } else if (("price").equals(sidx) && ("desc").equals(sord)) {
+            sql = "SELECT * FROM product ORDER BY price DESC LIMIT ?,?";
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, start);
             preparedStatement.setInt(2, pageSize);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -165,11 +175,9 @@ public class ProductDAO {
         try {
             if (connection != null) {
                 connection.close();
-
             }
         } catch (SQLException ex) {
-            Logger.getLogger(CustomerDAO.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

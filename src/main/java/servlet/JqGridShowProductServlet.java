@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dao.ProductDAO;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.ShowProduct;
@@ -28,6 +29,9 @@ public class JqGridShowProductServlet extends HttpServlet {
 
         response.setContentType("text/html; charset=UTF-8");
 
+        String sord = request.getParameter("sord");
+        String sidx = request.getParameter("sidx");
+
         int page = Integer.parseInt(request.getParameter("page")); // 目前頁數
         int pageSize = Integer.parseInt(request.getParameter("rows")); // 一頁筆數
         int rowCount = 0; // 總筆數
@@ -38,7 +42,7 @@ public class JqGridShowProductServlet extends HttpServlet {
         productDAO.getConnection();
         rowCount = productDAO.getTableRowCount(); // 總筆數取得
         pageCount = rowCount / pageSize + 1; // 計算總共頁數
-        ResultSet resultSet = productDAO.showProduct((page - 1) * pageSize, pageSize);
+        ResultSet resultSet = productDAO.showProduct(sidx, sord, (page - 1) * pageSize, pageSize);
         try {
             while (resultSet.next()) {
                 ShowProduct showProduct = new ShowProduct();
@@ -47,6 +51,25 @@ public class JqGridShowProductServlet extends HttpServlet {
                 showProduct.setPrice(resultSet.getDouble("Price"));
                 showProducts.add(showProduct);
             }
+
+//            if (sord != null && sord.length() > 0) {
+//                if (("id").equals(sidx) && ("desc").equals(sord)) {
+//                    Collections.reverse(showProducts);
+//                }
+//                if (("price").equals(sidx)) {
+//                    ResultSet rsOrderByPrice = productDAO.showProductOrderByPrice((page - 1) * pageSize, pageSize);
+//                    while (rsOrderByPrice.next()) {
+//                        ShowProduct showProduct = new ShowProduct();
+//                        showProduct.setId(rsOrderByPrice.getInt("ID"));
+//                        showProduct.setName(rsOrderByPrice.getString("Name"));
+//                        showProduct.setPrice(rsOrderByPrice.getDouble("Price"));
+//                        showProducts.add(showProduct);
+//                    }
+//                    if (("desc").equals(sord)) {
+//                        Collections.reverse(showProducts);
+//                    }
+//                }
+//            }
         } catch (SQLException ex) {
             Logger.getLogger(JqGridShowProductServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
