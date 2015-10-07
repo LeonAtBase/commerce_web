@@ -3,6 +3,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script>
+//            sessionStorage.clear();
+            sessionStorage.setItem("itemCount", 0);
+            sessionStorage.setItem("howManyItem", 0);
+        </script>
         <title>Login</title>
     </head>
     <body>

@@ -13,12 +13,11 @@
         <script src="Guriddo_jqGrid_JS_5.0.0/js/jquery.jqGrid.min.js" type="text/javascript"></script>
         <title>Order Page</title>
         <style>
-            a{
-                font-size: 18px;
-                border-style: double;
-            }
             a:hover{
                 text-decoration: none;
+            }
+            th{
+                text-align: center;
             }
         </style>
     </head>
@@ -37,39 +36,42 @@
             SELECT * FROM orders WHERE CustomerID=${sessionScope.id};
         </sql:query>
 
-        <table style="width: 40%">
-            <tr>
-                <td><a href="show_product.jsp">返回購買頁面</a></td>
-                <td style="text-align: right">
-                    <% out.print("使用者名稱: " + session.getAttribute("username"));%>
-                </td>
-            </tr>
-        </table>
-
-        <table border="5" style="width: 40%">
-            <tr style="background-color: lightblue; border-bottom-width: 0">
-                <th>訂單編號</th>
-                <th>消費金額</th>
-                <th>消費時間</th>
-                <th>消費明細</th>
-            </tr>
-            <c:forEach var="row" items="${rs.rows}">
+        <div style="margin-left:20px; margin-top: 20px">    
+            <table style="width: 40%">
                 <tr>
-                    <td><c:out value="${row.id}"/></td>
+                    <td><a href="show_product_jqgrid.jsp">返回購買頁面</a></td>
+                    <!--<td><a href="show_product.jsp">返回購買頁面</a></td>-->
                     <td style="text-align: right">
-                        <c:out value="${row.amount}"/>
-                    </td >
-                    <td style="text-align: center">
-                        <c:out value="${row.buydatetime}"/>
-                    </td>
-                    <td style="text-align: center">
-                        <form action="OrderDetailServlet" method="get">
-                            <input type="submit" value="明細">
-                            <input type="hidden" name="id" value="${row.id}">
-                        </form>                      
+                        <% out.print("使用者名稱: " + session.getAttribute("username"));%>
                     </td>
                 </tr>
-            </c:forEach>
-        </table>
+            </table>
+
+            <table border="1" style="width: 40%">
+                <tr style="background-color: lightblue; border-bottom-width: 0">
+                    <th>訂單編號</th>
+                    <th>消費金額</th>
+                    <th>消費時間</th>
+                    <th>消費明細</th>
+                </tr>
+                <c:forEach var="row" items="${rs.rows}">
+                    <tr>
+                        <td><c:out value="${row.id}"/></td>
+                        <td style="text-align: right">
+                            <c:out value="${row.amount} 元"/>
+                        </td >
+                        <td style="text-align: center">
+                            <c:out value="${row.buydatetime}"/>
+                        </td>
+                        <td style="text-align: center">
+                            <form action="OrderDetailServlet" method="get">
+                                <input type="submit" value="查詢明細">
+                                <input type="hidden" name="id" value="${row.id}">
+                            </form>                      
+                        </td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </div>
     </body>
 </html>

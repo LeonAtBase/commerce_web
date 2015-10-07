@@ -31,13 +31,14 @@ public class OrderDetailServlet extends HttpServlet {
             try {
                 if (resultSet.next()) {
                     out.print("<br>");
-                    out.print("<table border=\"5\" style=\"border-bottom-width: 0\">");
-                    out.print("<tr style=\"background-color: lightblue\">");
+                    out.print("<div style=\"margin-left:20px\">");
+                    out.print("<table border=\"1\" style=\"border-bottom-width: 0\">");
+                    out.print("<tr style=\"background-color: pink\">");
                     out.print("<th>訂單編號: " + resultSet.getInt("OrderID") + "</th>");
                     out.print("</tr>");
                     out.print("</table>");
 
-                    out.print("<table border=\"5\" style=\"width: 40%\">");
+                    out.print("<table border=\"1\" style=\"width: 40%\">");
                     out.print("<tr style=\"background-color: lightblue\">");
                     out.print("<th>消費編號</th>");
                     out.print("<th>商品編號</th>");
@@ -51,13 +52,14 @@ public class OrderDetailServlet extends HttpServlet {
                         out.print("<tr>");
                         out.print("<td>" + resultSet.getInt("ID") + "</td>");
                         out.print("<td>" + resultSet.getInt("ProductID") + "</td>");
-                        out.print("<td style=\"text-align: right\">" + resultSet.getDouble("Price") + "</td>");
+                        out.print("<td style=\"text-align: right\">" + resultSet.getDouble("Price") + " 元</td>");
                         out.print("<td style=\"text-align: right\">" + resultSet.getInt("Number") + "</td>");
                         out.print("<td style=\"text-align: right\">"
-                                + resultSet.getDouble("Price") * resultSet.getInt("Number") + "</td>");
+                                + resultSet.getDouble("Price") * resultSet.getInt("Number") + " 元</td>");
                         out.print("</tr>");
                     }
                     out.print("</table>");
+                    out.print("</div>");
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(OrderDetailServlet.class.getName()).log(Level.SEVERE, null, ex);

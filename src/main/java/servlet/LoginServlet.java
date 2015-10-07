@@ -30,7 +30,8 @@ public class LoginServlet extends HttpServlet {
                     HttpSession session = request.getSession();
                     session.setAttribute("username", username);
                     out.print("<h1>Welcome " + session.getAttribute("username") + "</h1>");
-                    request.getRequestDispatcher("show_product.jsp").include(request, response);
+                    request.getRequestDispatcher("show_product_jqgrid.jsp").include(request, response);
+//                    request.getRequestDispatcher("show_product.jsp").include(request, response);
                 } else {
                     request.getRequestDispatcher("login.jsp").include(request, response);
                     out.print("<h2 style='color:red'>帳號或密碼錯誤，請重新輸入!</h2>");
