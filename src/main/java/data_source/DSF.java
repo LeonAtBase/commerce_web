@@ -7,7 +7,7 @@ public class DSF {
 
     public static DataSource getDataSource() {
         MysqlDataSource mysqlDataSource = new MysqlDataSource();
-        mysqlDataSource.setURL("jdbc:mysql://192.168.0.54:3306/commerce");
+        mysqlDataSource.setURL("jdbc:mysql://192.168.0.137:3306/commerce");
         mysqlDataSource.setUser("guest");
         mysqlDataSource.setPassword("123");
         return mysqlDataSource;

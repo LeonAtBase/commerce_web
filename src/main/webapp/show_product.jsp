@@ -23,7 +23,7 @@
     </head>
     <body>
         <sql:setDataSource var="datasource" driver="com.mysql.jdbc.Driver"
-                           url="jdbc:mysql://192.168.0.54/commerce"
+                           url="jdbc:mysql://192.168.0.137/commerce"
                            user="guest"  password="123"/>
         <sql:query dataSource="${datasource}" var="rs">
             SELECT * FROM product;

@@ -30,7 +30,7 @@
             session.setAttribute("id", findIdByName);
         %>
         <sql:setDataSource var="datasource" driver="com.mysql.jdbc.Driver"
-                           url="jdbc:mysql://192.168.0.54/commerce"
+                           url="jdbc:mysql://192.168.0.137/commerce"
                            user="guest"  password="123"/>
         <sql:query var="rs" dataSource="${datasource}">
             SELECT * FROM orders WHERE CustomerID=${sessionScope.id};
