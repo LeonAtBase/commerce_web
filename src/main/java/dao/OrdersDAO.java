@@ -2,9 +2,7 @@ package dao;
 
 import com.sun.rowset.CachedRowSetImpl;
 import data_source.DSF;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,6 +28,15 @@ public class OrdersDAO {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return connection;
+    }
+
+    public void initial() {
+        dataSource = DSF.getDataSource();
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 //    Connection connection = null;
@@ -65,6 +72,53 @@ public class OrdersDAO {
             ordersStatement.executeUpdate();
             // ---- orders complete ----
             int getLastInsertId = 0;
+            try (Statement getLastInsertIdStatement = connection.createStatement();
+                    ResultSet getLastInsertIdResultSet = getLastInsertIdStatement
+                    .executeQuery("SELECT LAST_INSERT_ID()");
+                    PreparedStatement orderDetailStatement = connection.prepareStatement("SELECT * "
+                            + "FROM product WHERE ID=?")) {
+                for (int i = 0; i < productId.size(); i++) {
+                    orderDetailStatement.setInt(1, productId.get(i));
+                    try (ResultSet orderDetailResultSet = orderDetailStatement.executeQuery();
+                            PreparedStatement insertOrderDetailStatement = connection.prepareStatement(
+                                    "INSERT INTO order_detail (OrderID, ProductID, Price, Number) "
+                                    + "VALUES (?, ?, ?, ?)");) {
+                        while (getLastInsertIdResultSet.next()) {
+                            getLastInsertId = getLastInsertIdResultSet.getInt(1);
+                        }
+                        while (orderDetailResultSet.next()) {
+                            insertOrderDetailStatement.setInt(1, getLastInsertId);
+                            insertOrderDetailStatement.setInt(2, orderDetailResultSet.getInt("ID"));
+                            insertOrderDetailStatement.setDouble(3, orderDetailResultSet.getDouble("Price"));
+                            insertOrderDetailStatement.setInt(4, number.get(i));
+                            insertOrderDetailStatement.executeUpdate();
+                        }
+                    }
+                }
+            }
+            connection.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(OrdersDAO.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                connection.rollback();
+            } catch (SQLException ex1) {
+                Logger.getLogger(OrdersDAO.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+    }
+
+    public void insertCartToDB(Orders orders, OrderDetail orderDetail) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO orders "
+                + "(CustomerID, Amount) VALUES (?, ?)")) {
+            connection.setAutoCommit(false);
+            preparedStatement.setInt(1, orders.getCustomerId());
+            preparedStatement.setDouble(2, orders.getAmount());
+            preparedStatement.executeUpdate();
+            // ---- orders complete ----
+
+            int getLastInsertId = 0;
+            ArrayList<Integer> productId = orderDetail.getProductId();
+            ArrayList<Integer> number = orderDetail.getNumber();
             try (Statement getLastInsertIdStatement = connection.createStatement();
                     ResultSet getLastInsertIdResultSet = getLastInsertIdStatement
                     .executeQuery("SELECT LAST_INSERT_ID()");
@@ -166,7 +220,7 @@ public class OrdersDAO {
     public int findIdByName(String username) {
         int id = 0;
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM "
-                + "customer Where Name=?")) {
+                + "customer Where Name=?")) { // rewrite SELECT * to SELECT id (performance)
             connection.setAutoCommit(false);
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -187,7 +241,7 @@ public class OrdersDAO {
     }
 
     public CachedRowSet selectDetail(int orderId) {
-        CachedRowSet cachedRowSet = null;
+        CachedRowSet cachedRowSet = null; // off-line working
         try {
             cachedRowSet = new CachedRowSetImpl();
         } catch (SQLException ex) {

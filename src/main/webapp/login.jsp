@@ -2,7 +2,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">-->
+        <meta charset="UTF-8">
         <script>
 //            sessionStorage.clear();
             sessionStorage.setItem("itemCount", 0);
@@ -13,13 +14,16 @@
     <body>
         <form action="LoginServlet" method="get" >
             <h2>購物商城登入系統</h2>
-            Username:<br>
-            <input type="text" name="username" size="15">
+            <label>Account:</label><br>
+            <input type="text" name="account" size="15" placeholder="輸入您的電子郵件">
             <br>
-            Password:<br>
-            <input type="password" name="password" size="15">
+            <label>Password:</label><br>
+            <input type="password" name="password" size="15" placeholder="密碼">
             <br><br>
             <input type="submit" value="Login">
         </form>
+        <h2 style='color:red'>
+            ${requestScope.warning}
+        </h2>
     </body>
 </html>

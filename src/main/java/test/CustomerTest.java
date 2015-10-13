@@ -46,7 +46,8 @@ public class CustomerTest {
         
         // 驗證顧客帳號
         String username = "小龍女";
-        if(customerDAO.validate(username)){
+        String password = "123";
+        if(customerDAO.validate(username, password)){
             System.out.println(username + " 成功登入");
         }else{
             System.err.println("帳號或密碼錯誤");

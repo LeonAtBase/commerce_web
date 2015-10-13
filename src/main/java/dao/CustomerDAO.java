@@ -18,7 +18,7 @@ public class CustomerDAO {
     DataSource dataSource = null;
     Connection connection = null;
 
-    public Connection getConnection() {
+    public Connection getConnection() { // should not be return
         dataSource = DSF.getDataSource();
         try {
             connection = dataSource.getConnection();
@@ -26,6 +26,15 @@ public class CustomerDAO {
             Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return connection;
+    }
+
+    public void initial() {
+        dataSource = DSF.getDataSource();
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 //    DataSource ds = DataSourceFactory.getMySQLDataSource();
@@ -162,11 +171,12 @@ public class CustomerDAO {
         }
     }
 
-    public boolean validate(String username) {
+    public boolean validate(String account, String password) {
         boolean status = false;
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM "
-                + "customer WHERE name=?")) {
-            preparedStatement.setString(1, username);
+                + "customer WHERE Mail=? AND Password=?")) {
+            preparedStatement.setString(1, account);
+            preparedStatement.setString(2, password);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 status = resultSet.next();
             }
@@ -174,6 +184,38 @@ public class CustomerDAO {
             Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return status;
+    }
+
+    public String findNameByMail(String account) {
+        String username = "";
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT Name FROM "
+                + "customer WHERE Mail=?")) {
+            preparedStatement.setString(1, account);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    username = resultSet.getString("Name");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return username;
+    }
+
+    public int findIdByMail(String account) {
+        int userId = 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT ID FROM "
+                + "customer WHERE Mail=?")) {
+            preparedStatement.setString(1, account);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    userId = resultSet.getInt("ID");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return userId;
     }
 
     public void closeConnection() {
