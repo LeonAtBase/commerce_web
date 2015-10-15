@@ -8,12 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import model.OrderDetail;
 import model.Orders;
+import model.ShowOrderDetail;
 
 public class OrdersDAO {
 
@@ -268,6 +270,28 @@ public class OrdersDAO {
             Logger.getLogger(OrdersDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return cachedRowSet;
+    }
+
+    public List<ShowOrderDetail> selectDetailByOrderId(int orderId) {
+        List<ShowOrderDetail> showOrderDetails = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM "
+                + "order_detail WHERE OrderID=?")) {
+            preparedStatement.setInt(1, orderId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    ShowOrderDetail showOrderDetail = new ShowOrderDetail();
+                    showOrderDetail.setId(resultSet.getInt("ID"));
+                    showOrderDetail.setProductId(resultSet.getInt("ProductID"));
+                    showOrderDetail.setPrice(resultSet.getDouble("Price"));
+                    showOrderDetail.setNumber(resultSet.getInt("Number"));
+                    showOrderDetail.setTotal(resultSet.getDouble("Price") * resultSet.getInt("Number"));
+                    showOrderDetails.add(showOrderDetail);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OrdersDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return showOrderDetails;
     }
 
     public void closeConnection() {

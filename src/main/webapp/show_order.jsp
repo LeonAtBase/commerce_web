@@ -18,7 +18,7 @@
             }
             div.orders table.nav,
             div.orders table.section {
-                width: 550px;
+                width: 500px;
             }
             div.orders table.nav a:hover {
                 text-decoration: none;
@@ -39,18 +39,36 @@
                 text-align: right;
             }
 
+            /*order detail table css setting*/
             div.order-detail {
                 margin-left: 20px;
+                display: none;
             }
-            div.order-detail table.sheet {
-                border-bottom: 0;
+            div.order-detail table.sheet,
+            div.order-detail table.sheet th,
+            div.order-detail table.section,
+            div.order-detail table.section th,
+            div.order-detail table.section td {
+                border: 1px solid;
             }
             div.order-detail table.sheet,
             div.order-detail table.sheet th {
-                border: 1px solid;
+                border-bottom: 0;
             }
             div.order-detail table.sheet tr {
                 background-color: pink;
+            }
+            div.order-detail table.section {
+                width: 500px;
+            }
+            div.order-detail table.section tr.table-heading {
+                background-color: lightblue;
+            }
+            div.order-detail table.section tr.table-heading th{
+                text-align: center;
+            }
+            div.order-detail table.section td {
+                height: 25px;
             }
         </style>
         <!-- it is better to use CSS by class or id -->
@@ -96,29 +114,41 @@
                             <form action="OrderDetailServlet" method="get">
                                 <input type="submit" value="查詢明細">
                                 <input type="hidden" name="id" value="${row.id}">
-                            </form>                      
+                            </form>
                         </td>
                     </tr>
                 </c:forEach>
             </table>
         </div>
 
+        <!--order detail table display-->            
         <br>
-        <div class="order-detail">
+        <div class="order-detail" id="order-detail">
+            <!--get javascript style display to block replace none if the order detail is not empty-->
+            <script>${requestScope.displayOrderDetailTable}</script>
             <table class="sheet">
                 <tr>
-                    <th>${orderNumber}</th>
+                    <th>訂單編號: ${requestScope.orderNumber}</th>
                 </tr>
             </table>
 
-            <table>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+            <table class="section">
+                <tr class="table-heading">
+                    <th>消費編號</th>
+                    <th>商品編號</th>
+                    <th>單品價格</th>
+                    <th>購買數量</th>
+                    <th>單項總金額</th>
                 </tr>
+                <c:forEach var="row" items="${requestScope.showOrderDetails}">
+                    <tr>
+                        <td><c:out value="${row.id}"/></td>
+                        <td><c:out value="${row.productId}"/></td>
+                        <td class="align-right"><c:out value="${row.price}"/> 元</td>
+                        <td class="align-right"><c:out value="${row.number}"/></td>
+                        <td class="align-right"><c:out value="${row.total}"/> 元</td>
+                    </tr>
+                </c:forEach>
             </table>
         </div>
     </body>
