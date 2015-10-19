@@ -221,7 +221,7 @@ public class OrdersDAO {
 
     public int findIdByName(String username) {
         int id = 0;
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM "
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT ID FROM "
                 + "customer Where Name=?")) { // rewrite SELECT * to SELECT id (performance)
             connection.setAutoCommit(false);
             preparedStatement.setString(1, username);

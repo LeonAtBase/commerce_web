@@ -4,6 +4,8 @@ import dao.OrdersDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,16 +31,17 @@ public class CheckServlet extends HttpServlet {
             } else {
                 // the shopping cart is not empty then insert into db
                 OrdersDAO ordersDAO = new OrdersDAO();
-                ordersDAO.getConnection();
+                ordersDAO.initial();
                 // 新增一筆訂單
                 Orders orders = new Orders();
                 OrderDetail orderDetail = new OrderDetail();
-                // 用username找id
-                HttpSession session = request.getSession();
-                int findIdByName = 0;
-                findIdByName = ordersDAO.findIdByName(session.getAttribute("username").toString());
+//                // 用username找id
+//                HttpSession session = request.getSession();
+//                int findIdByName = 0;
+//                findIdByName = ordersDAO.findIdByName(session.getAttribute("username").toString());
                 // insert into orders
-                orders.setCustomerId(findIdByName); // 會員下訂單
+                HttpSession session = request.getSession();
+                orders.setCustomerId((int) session.getAttribute("id")); // 會員下訂單
                 orders.setAmount(Double.parseDouble(request.getParameter("total_amount"))); // 此訂單總金額
                 // insert into order_detail
                 ArrayList<Integer> productId = new ArrayList(); // 下商品id
@@ -60,6 +63,8 @@ public class CheckServlet extends HttpServlet {
                 out.print("<script>alert('訂單新增成功');</script>");
                 out.print("<script>sessionStorage.clear();</script>");
             }
+        } catch (IOException ex) {
+            Logger.getLogger(OrderDetailServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
